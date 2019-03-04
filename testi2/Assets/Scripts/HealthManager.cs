@@ -1,11 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets._2D;
 
 public class HealthManager : MonoBehaviour //NewBehaviourScript : MonoBehaviour
 {
     public GameObject[] hearts;
     private int health;
+    public Rigidbody2D playerBody;
+
+    public Platformer2DUserControl playerControl;
+
 
     // Start is called before the first frame update
     void Start()
@@ -17,5 +22,38 @@ public class HealthManager : MonoBehaviour //NewBehaviourScript : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.tag =="Hazard")
+        {
+            health--;
+            hearts[health].SetActive(false);
+            knockBack(collision.transform.position);
+        }
+
+        if (health == 0)
+        {
+            Application.LoadLevel(Application.loadedLevelName);
+        }
+    }
+
+    void knockBack(Vector3 hazardPosition)
+    {
+        StartCoroutine ("haltMovement");
+        Vector3 heading = transform.position - hazardPosition;
+        float distance = heading.magnitude;
+        Vector3 direction = heading / distance;
+
+        Vector2 directionForVelocity = new Vector2(direction.x, direction.y);
+        playerBody.velocity = directionForVelocity * 10f;
+    }
+
+    IEnumerator haltMovement()
+    {
+        playerControl.movementEnabled = false;
+        yield return new WaitForSeconds(1.0f);
+        playerControl.movementEnabled = true;
     }
 }
