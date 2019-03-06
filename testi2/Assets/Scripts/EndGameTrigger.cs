@@ -5,6 +5,8 @@ using UnityEngine;
 public class EndGameTrigger : MonoBehaviour
 {
     public int levelNum;
+    public bool finalLevel;
+    public GameObject playAgainButton;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +23,19 @@ public class EndGameTrigger : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            Application.LoadLevel("Level" + levelNum);
+            if (finalLevel)
+            {
+                playAgainButton.SetActive(true);
+            }
+            else
+            {
+                Application.LoadLevel("Level" + levelNum);
+            }
         }
+    }
+
+    public void restartGame()
+    {
+        Application.LoadLevel("Level1");
     }
 }
