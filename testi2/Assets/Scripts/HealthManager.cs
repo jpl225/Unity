@@ -10,7 +10,10 @@ public class HealthManager : MonoBehaviour //NewBehaviourScript : MonoBehaviour
     public Rigidbody2D playerBody;
 
     public Platformer2DUserControl playerControl;
+    public AudioSource source;
 
+    private float lastTimeHit;
+    private float hitTime = 0.5f;
 
     // Start is called before the first frame update
     void Start()
@@ -26,11 +29,13 @@ public class HealthManager : MonoBehaviour //NewBehaviourScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.tag =="Hazard")
+        if(collision.gameObject.tag =="Hazard" && Time.time > lastTimeHit + hitTime)
         {
+            source.Play(); 
             health--;
             hearts[health].SetActive(false);
             knockBack(collision.transform.position);
+            lastTimeHit = Time.time; 
         }
 
         if (health == 0)
